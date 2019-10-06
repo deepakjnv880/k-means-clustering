@@ -5,7 +5,7 @@ Implements K means clustering on 2d data point.
 There are two folder LS(Linearly Seperable) , NLS(Non Linearly Seperable). Each folder has data folder,python file and its cluster image.
 
 # Assumption 
-Euclidean distance is used as measure of distance in Distortion calculation.
+Euclidean distance is used as measure of distance in Distortion calculation.<br />
 For initial expectation of k mean in EM step any k random point from given data set has been taken.
 
 # Package required
