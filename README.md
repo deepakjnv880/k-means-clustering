@@ -6,6 +6,7 @@ There are two folder LS(Linearly Seperable) , NLS(Non Linearly Seperable). Each 
 
 # Assumption 
 Euclidean distance is used as measure of distance in Distortion calculation.
+For initial expectation of k mean in EM step any k random point from given data set has been taken.
 
 # Package required
 Install matplotlib and tkinter using below command:  
