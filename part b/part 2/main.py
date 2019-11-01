@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import math
 #manhattan distance+euclidean_distance is used as distance measure
-error_allowed=30
+error_allowed=1000
 # image_dim=400
 image_dim=300
 K=10
@@ -52,7 +52,7 @@ def main():
     k_mean=assign_k_random_mean(image)
     # print("below is initial random k means : \n",k_mean,"\n################\n")
     new_distortion_value=0
-    old_distortion_value=100
+    old_distortion_value=10000
     assigned_cluster = np.zeros((image_dim, image_dim), dtype=np.uint8)
     # print(assigned_cluster)
     while(error_allowed<abs(old_distortion_value-new_distortion_value)):
@@ -67,7 +67,9 @@ def main():
 
         ######## improving k means #########
         number_of_element_in_cluster=[0 for i in range(K)]
-
+        k_mean=[]
+        for i in range(K):
+            k_mean.append([[0,0],[0,0,0]])
         for i in range(image_dim):
             for j in range(image_dim):
                 k_mean[assigned_cluster[i][j]][0][0]=k_mean[assigned_cluster[i][j]][0][0]+i
@@ -91,43 +93,18 @@ def main():
 
 
     # img.show()
-    k_cluster_min_max=[]
-    for i in range(K):
-        k_cluster_min_max.append([[image_dim+5,image_dim+5],[0,0]])
-    print(k_cluster_min_max)
-    for i in range(image_dim):
-        for j in range(image_dim):
-            if k_cluster_min_max[assigned_cluster[i][j]][0][0]>i:
-                k_cluster_min_max[assigned_cluster[i][j]][0][0]=i
-            if k_cluster_min_max[assigned_cluster[i][j]][1][0]<i:
-                k_cluster_min_max[assigned_cluster[i][j]][1][0]=i
-            if k_cluster_min_max[assigned_cluster[i][j]][0][1]>j:
-                k_cluster_min_max[assigned_cluster[i][j]][0][1]=j
-            if k_cluster_min_max[assigned_cluster[i][j]][1][1]<j:
-                k_cluster_min_max[assigned_cluster[i][j]][1][1]=j
     # print("======================= NOW ====================")
-    # print(k_cluster_min_max)
+    # print(k_mean)
     data = np.zeros((image_dim, image_dim, 3), dtype=np.uint8)
     for i in range(image_dim):
         for j in range(image_dim):
-            data[i][j][0]=int(image[i][j][0])
-            data[i][j][1]=int(image[i][j][1])
-            data[i][j][2]=int(image[i][j][2])
-
-
-
-    for x in range(K):
-        for i in range(k_cluster_min_max[x][0][0],k_cluster_min_max[x][1][0],1):
-            data[i][k_cluster_min_max[x][0][1]]=[0,0,0]
-            data[i][k_cluster_min_max[x][1][1]]=[0,0,0]
-        for i in range(k_cluster_min_max[x][0][1],k_cluster_min_max[x][1][1],1):
-            data[k_cluster_min_max[x][0][0]][i]=[0,0,0]
-            data[k_cluster_min_max[x][1][0]][i]=[0,0,0]
-
+            data[i][j]=k_mean[assigned_cluster[i][j]][1]
 
     img = Image.fromarray(data, 'RGB')
     img.save('output.jpg')
-    img.show()
+    img = cv.imread('output.jpg')
+    img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+    cv.imwrite('output.jpg', img)
 
 
 if __name__ == '__main__':
