@@ -8,7 +8,7 @@ import math
 error_allowed=10
 # image_dim=400
 image_dim=300
-K=7
+# K=7
 
 def calculate_euclidean_distance(first_coordinate,second_coordinate):
     return math.sqrt(pow((int(first_coordinate[0])-int(second_coordinate[0])),2)+(pow((int(first_coordinate[1])-int(second_coordinate[1])),2)))
@@ -19,7 +19,7 @@ def calculate_manhattan_distance(first_pixel,second_pixel):
         distance=distance+abs(int(first_pixel[i])-int(second_pixel[i]))
     return distance
 
-def assign_cluster(image_pixel,k_mean,flag):
+def assign_cluster(image_pixel,k_mean,flag,K):
     min_index=-1;min_distance=100000
     for i in range(K):
         if flag==0:
@@ -31,7 +31,7 @@ def assign_cluster(image_pixel,k_mean,flag):
             min_index=i
     return min_distance,min_index
 
-def assign_k_random_mean(image):
+def assign_k_random_mean(image,K):
     k_mean=[]
     for i in range(K):
         x=random.randrange(0, image_dim, 5)
@@ -39,12 +39,12 @@ def assign_k_random_mean(image):
         k_mean.append(image[x][y])
     return k_mean
 
-def method1():
+def method1(K):
     print("\n\n##################### Method1 Start #######################\n\n")
     fname = "input.jpg"
     image=cv.imread(fname)
     image = cv.resize(image, (image_dim, image_dim))
-    k_mean=assign_k_random_mean(image)
+    k_mean=assign_k_random_mean(image,K)
     # print("below is initial random k means : \n",k_mean,"\n################\n")
     new_distortion_value=0
     old_distortion_value=100000
@@ -56,7 +56,7 @@ def method1():
         ########## assgning cluster ##############
         for i in range(image_dim):
             for j in range(image_dim):
-                min_distance,predicated_cluster=assign_cluster(image[i][j],k_mean,0)
+                min_distance,predicated_cluster=assign_cluster(image[i][j],k_mean,0,K)
                 assigned_cluster[i][j]=predicated_cluster
                 new_distortion_value=new_distortion_value+min_distance
 
@@ -95,12 +95,12 @@ def method1():
     cv.imwrite('euclidean_output.jpg', img)
     print("\n\n##################### Method1 End #######################\n\n")
 
-def method2():
+def method2(K):
     print("##################### Method2 Start #######################\n\n")
     fname = "input.jpg"
     image=cv.imread(fname)
     image = cv.resize(image, (image_dim, image_dim))
-    k_mean=assign_k_random_mean(image)
+    k_mean=assign_k_random_mean(image,K)
     # print("below is initial random k means : \n",k_mean,"\n################\n")
     new_distortion_value=0
     old_distortion_value=100000
@@ -112,7 +112,7 @@ def method2():
         ########## assgning cluster ##############
         for i in range(image_dim):
             for j in range(image_dim):
-                min_distance,predicated_cluster=assign_cluster(image[i][j],k_mean,1)
+                min_distance,predicated_cluster=assign_cluster(image[i][j],k_mean,1,K)
                 assigned_cluster[i][j]=predicated_cluster
                 new_distortion_value=new_distortion_value+min_distance
 
@@ -152,8 +152,11 @@ def method2():
     print("\n\n##################### Method2 End #######################\n\n")
 
 def main():
-    method1()
-    method2()
+    print("Enter the number of cluster to see magic : ")
+    # K=9
+    K=int(input())
+    method1(K)
+    method2(K)
 
 
 

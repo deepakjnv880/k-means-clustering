@@ -8,13 +8,9 @@ import math
 error_allowed=1000
 # image_dim=400
 image_dim=300
-K=10
+# K=10
 
 def calculate_euclidean_distance(first_coordinate,second_coordinate):
-    # print(data_vector)
-    # print('####### ############ ',first_coordinate,second_coordinate)
-    # print('*************************',math.sqrt(pow((first_coordinate[0]-second_coordinate[0]),2)+(pow((first_coordinate[1]-second_coordinate[1]),2))))
-    # print(mean_vector)
     return math.sqrt(pow((first_coordinate[0]-second_coordinate[0]),2)+(pow((first_coordinate[1]-second_coordinate[1]),2)))
 def calculate_manhattan_distance(first_pixel,second_pixel):
     # print('####### ############ ',first_pixel,second_pixel)
@@ -24,7 +20,7 @@ def calculate_manhattan_distance(first_pixel,second_pixel):
     # print("hi am ended,distance",distance)
     return distance
 
-def assign_cluster(x,y,image_pixel,k_mean):
+def assign_cluster(x,y,image_pixel,k_mean,K):
     min_index=-1;min_distance=100000
     for i in range(K):
         distance=calculate_manhattan_distance(k_mean[i][1],image_pixel)+calculate_euclidean_distance(k_mean[i][0],[x,y])
@@ -33,9 +29,7 @@ def assign_cluster(x,y,image_pixel,k_mean):
             min_index=i
     return min_distance,min_index
 
-
-
-def assign_k_random_mean(image):
+def assign_k_random_mean(image,K):
     k_mean=[]
     for i in range(K):
         x=random.randrange(0, image_dim, 5)
@@ -44,12 +38,14 @@ def assign_k_random_mean(image):
     return k_mean
 
 def main():
+    print("Enter the number of cluster to see magic : ")
+    K=int(input())
     fname = "input.jpg"
     image=cv.imread(fname)
     # print(np.shape(np.array(image)))
     image = cv.resize(image, (image_dim, image_dim))
     # print(np.shape(np.array(image)))
-    k_mean=assign_k_random_mean(image)
+    k_mean=assign_k_random_mean(image,K)
     # print("below is initial random k means : \n",k_mean,"\n################\n")
     new_distortion_value=0
     old_distortion_value=10000
@@ -61,7 +57,7 @@ def main():
         ########## assgning cluster ##############
         for i in range(image_dim):
             for j in range(image_dim):
-                min_distance,predicated_cluster=assign_cluster(i,j,image[i][j],k_mean)
+                min_distance,predicated_cluster=assign_cluster(i,j,image[i][j],k_mean,K)
                 assigned_cluster[i][j]=predicated_cluster
                 new_distortion_value=new_distortion_value+min_distance
 
